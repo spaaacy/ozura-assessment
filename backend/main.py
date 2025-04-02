@@ -2,15 +2,13 @@ from flask import Flask, request, jsonify
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 from pymongo import MongoClient
-from flask_jwt_extended import create_access_token, JWTManager, jwt_required
+from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
 import uuid
 import os
 import datetime
 import helpers
 
 load_dotenv(override=True)
-
-
 
 app = Flask(__name__)
 mongo = MongoClient("mongodb://localhost:27017/")
@@ -27,6 +25,7 @@ jwt = JWTManager(app)
 @app.route("/tokenize", methods=["POST"])
 @jwt_required()
 def tokenize():
+    user_email = get_jwt_identity()
     data = request.json
     card_number = data.get("card_number")
     expiry = data.get("expiry")
@@ -39,6 +38,7 @@ def tokenize():
     encrypted_data = cipher.encrypt(f"{card_number}|{expiry}|{cvv}".encode())
 
     tokens.insert_one({
+        "user_email": user_email,
         "token": token,
         "encrypted_data": encrypted_data,
         "created_at": datetime.datetime.now(datetime.UTC)
@@ -47,7 +47,9 @@ def tokenize():
     return jsonify({token: token}), 201
 
 @app.route("/detokenize", methods=["POST"])
+@jwt_required()
 def detokenize():
+    user_email = get_jwt_identity()
     data = request.json
     token = data.get("token")
 
@@ -58,6 +60,9 @@ def detokenize():
 
     if not record:
         return jsonify({"error": "Token does not exist"}), 404
+
+    if record['user_email'] != user_email:
+        return jsonify({"error": "You do not have access to this resource"}), 403
 
     try:
         decrypted_card = cipher.decrypt(record["encrypted_data"]).decode()
