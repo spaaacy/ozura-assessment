@@ -37,4 +37,31 @@ def tokenize():
     
     return jsonify({token: token}), 201
 
+@app.route("/detokenize", methods=["POST"])
+def detokenize():
+    data = request.json
+    token = data.get("token")
+
+    if not token:
+        return jsonify({"error": "Missing token"}), 400
+    
+    record = tokens.find_one({"token": token})
+
+    if not record:
+        return jsonify({"error": "Token does not exist"}), 404
+
+    try:
+        decrypted_card = cipher.decrypt(record["encrypted_data"]).decode()
+        parts = decrypted_card.split("|")
+        card_object = {
+            "card_number": parts[0],
+            "expiry_date": parts[1],
+            "cvv": parts[2]
+        }
+        return jsonify({"card_details": card_object}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Decryption failed"}), 500
+    
+
 app.run(host="0.0.0.0", port=8080)
