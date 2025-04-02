@@ -2,21 +2,30 @@ from flask import Flask, request, jsonify
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 from pymongo import MongoClient
+from flask_jwt_extended import create_access_token, JWTManager, jwt_required
 import uuid
 import os
 import datetime
+import helpers
 
 load_dotenv(override=True)
+
+
 
 app = Flask(__name__)
 mongo = MongoClient("mongodb://localhost:27017/")
 db = mongo.tokenization
 tokens = db.tokens
+users = db.users
 
 key = os.getenv("ENCRYPTION_KEY")
 cipher = Fernet(key)
 
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
+jwt = JWTManager(app)
+
 @app.route("/tokenize", methods=["POST"])
+@jwt_required()
 def tokenize():
     data = request.json
     card_number = data.get("card_number")
@@ -62,6 +71,45 @@ def detokenize():
     except Exception as e:
         print(e)
         return jsonify({"error": "Decryption failed"}), 500
+    
+@app.route("/register", methods=["POST"])
+def register():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+    
+    if not email or not password:
+        return jsonify({"error": "Email and password required"}), 400
+
+    if users.find_one({"email": email}):
+        return jsonify({"error": "User already exists"}), 409
+
+    hashed_password = helpers.get_hashed_password(password)
+
+    users.insert_one({"email":email, "password": hashed_password})
+    
+    return jsonify({"message": "User registration successful"}), 201
+
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+    
+    if not email or not password:
+        return jsonify({"error": "Email and password required"}), 400
+
+    record = users.find_one({"email": email})
+
+    password_match = helpers.check_password(password, record['password'])
+
+    if password_match:
+        access_token = create_access_token(identity=email, expires_delta=datetime.timedelta(hours=1))
+        return jsonify({"access_token": access_token}), 200
+    else:
+        return jsonify({"error": "Incorrect user credentials"}), 401
+    
+
     
 
 app.run(host="0.0.0.0", port=8080)
