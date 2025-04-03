@@ -1,19 +1,15 @@
-"use client";
+'use client'
 
-import CardInput from "@/components/CardInput";
-import NavBar from "@/components/NavBar";
-import SignIn from "@/components/SignIn";
-import SignUp from "@/components/SignUp";
+import Home from "@/components/Home";
+import { SessionProvider } from "next-auth/react";
+import React from "react";
 
-
-export default function Home() {
-
+const Page = () => {
   return (
-    <main>
-      <NavBar />
-      {/* <CardInput/> */}
-      {/* <SignIn/> */}
-      <SignUp/>
-    </main>
+    <SessionProvider>
+      <Home />
+    </SessionProvider>
   );
-}
+};
+
+export default Page;

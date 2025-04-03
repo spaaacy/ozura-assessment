@@ -110,7 +110,7 @@ def login():
 
     if password_match:
         access_token = create_access_token(identity=email, expires_delta=datetime.timedelta(hours=1))
-        return jsonify({"access_token": access_token}), 200
+        return jsonify({"access_token": access_token, "email": email, "name": record['name']}), 200
     else:
         return jsonify({"error": "Incorrect user credentials"}), 401
     
