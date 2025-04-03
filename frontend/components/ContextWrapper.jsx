@@ -1,15 +1,14 @@
-'use client'
+"use client";
 
-import Home from "@/components/Home";
 import { SessionProvider } from "next-auth/react";
 import React from "react";
 
-const Page = () => {
+const ContextWrapper = ({children}) => {
   return (
     <SessionProvider>
-      <Home />
+        {children}
     </SessionProvider>
   );
 };
 
-export default Page;
+export default ContextWrapper;

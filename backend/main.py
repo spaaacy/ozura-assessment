@@ -7,10 +7,12 @@ import uuid
 import os
 import datetime
 import helpers
+from flask_cors import CORS
 
 load_dotenv(override=True)
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 mongo = MongoClient("mongodb://localhost:27017/")
 db = mongo.tokenization
 tokens = db.tokens
@@ -28,6 +30,7 @@ def tokenize():
     user_email = get_jwt_identity()
     data = request.json
     card_number = data.get("card_number")
+    name = data.get("name")
     expiry = data.get("expiry")
     cvv = data.get("cvv")
     token = str(uuid.uuid4())
@@ -35,7 +38,7 @@ def tokenize():
     if not card_number or not expiry or not cvv:
         return jsonify({"error": "Missing card details"}), 400
     
-    encrypted_data = cipher.encrypt(f"{card_number}|{expiry}|{cvv}".encode())
+    encrypted_data = cipher.encrypt(f"{card_number}|{expiry}|{cvv}|{name}".encode())
 
     tokens.insert_one({
         "user_email": user_email,
@@ -44,7 +47,7 @@ def tokenize():
         "created_at": datetime.datetime.now(datetime.UTC)
     })
     
-    return jsonify({token: token}), 201
+    return jsonify({"token": token}), 201
 
 @app.route("/detokenize", methods=["POST"])
 @jwt_required()
@@ -70,16 +73,17 @@ def detokenize():
         card_object = {
             "card_number": parts[0],
             "expiry_date": parts[1],
-            "cvv": parts[2]
+            "cvv": parts[2],
+            "name": parts[3]
         }
         return jsonify({"card_details": card_object}), 200
     except Exception as e:
-        print(e)
         return jsonify({"error": "Decryption failed"}), 500
     
 @app.route("/register", methods=["POST"])
 def register():
     data = request.json
+    name = data.get("name")
     email = data.get("email")
     password = data.get("password")
     
@@ -91,7 +95,7 @@ def register():
 
     hashed_password = helpers.get_hashed_password(password)
 
-    users.insert_one({"email":email, "password": hashed_password})
+    users.insert_one({"email":email, "password": hashed_password, "name":name})
     
     return jsonify({"message": "User registration successful"}), 201
 
