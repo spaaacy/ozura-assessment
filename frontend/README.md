@@ -1,5 +1,7 @@
 # Tokenization Service
 
+This is a Next.js based frontend for a tokenization service that using NextAuth for JWT authentication.
+
 ## Getting Started
 
 First, run the development server:
