@@ -125,7 +125,3 @@ The application requires the following environment variables to be set in the `.
 - `ENCRYPTION_KEY`: A 32-byte base64-encoded key for encrypting card details.
 - `MONGO_URI`: MongoDB connection URI.
 - `JWT_SECRET_KEY`: Secret key for signing JWT tokens.
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for details.
