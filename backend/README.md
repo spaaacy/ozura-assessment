@@ -12,13 +12,7 @@ This is a Flask-based tokenization service that uses MongoDB for storage and JWT
 
 Follow these steps to set up the project:
 
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd <repository-directory>
-   ```
-
-2. Create and activate a virtual environment:
+1. Create and activate a virtual environment:
 
    - **Windows**:
      ```bash
@@ -32,19 +26,19 @@ Follow these steps to set up the project:
      source .venv/bin/activate
      ```
 
-3. Install dependencies:
+2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Set up the `.env` file at the root of the project:
+3. Set up the `.env` file at the root of the project:
    ```plaintext
    ENCRYPTION_KEY=jZngpJFG2dNMmqCJdXGPRU5QfGJadyA8NYybBM3GfNQ=
    MONGO_URI=mongodb://localhost:27017/tokenization
    JWT_SECRET_KEY=324bd8c227e8074689c2b8f224d7fb10c47aa4e77590274cad048fa01f908456
    ```
 
-5. Run the server:
+4. Run the server:
    ```bash
    python main.py
    ```

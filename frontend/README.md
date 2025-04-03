@@ -16,6 +16,11 @@ pnpm dev
 bun dev
 ```
 
+> **Important Note**: If you encounter dependency issues during installation, use the following command to install dependencies:
+> ```bash
+> npm install --legacy-peer-deps
+> ```
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Environment Variables
