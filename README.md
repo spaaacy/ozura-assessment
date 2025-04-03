@@ -14,7 +14,7 @@ Check out the live demo of the application on YouTube:
 [Card Tokenizer Demo](https://youtu.be/kB1hjZEnseE)
 
 For a detailed explanation of how the application works, watch the video tutorial:  
-[Card Tokenizer Video Explanation](https://youtu.be/kB1hjZEnseE)
+[Card Tokenizer Video Explanation](https://youtu.be/SXHOFtXkCPM)
 
 ## Tech Stack
 - **Frontend**: Next.js, React, Tailwind CSS
