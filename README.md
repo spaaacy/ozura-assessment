@@ -7,14 +7,14 @@ Card Tokenizer is a modern web application that allows users to securely tokeniz
 - **Detokenize Cards**: Retrieve original card information from tokens.
 - **User Authentication**: Secure login and signup functionality using NextAuth.
 - **Modern UI**: Stylish and responsive design for an intuitive user experience.
-- 
+
 ## Demo and Video Explanation
 
 Check out the live demo of the application on YouTube:  
 [Card Tokenizer Demo](https://youtu.be/kB1hjZEnseE)
 
 For a detailed explanation of how the application works, watch the video tutorial:  
-[Card Tokenizer Video Explanation](https://youtu.be/kB1hjZEnseE)
+[Card Tokenizer Video Explanation](https://www.youtube.com/watch?v=Ase0sERC4D4)
 
 ## Tech Stack
 - **Frontend**: Next.js, React, Tailwind CSS
