@@ -35,7 +35,7 @@ def tokenize():
     cvv = data.get("cvv")
     token = str(uuid.uuid4())
 
-    if not card_number or not expiry or not cvv:
+    if not card_number or not expiry or not cvv or not name:
         return jsonify({"error": "Missing card details"}), 400
     
     encrypted_data = cipher.encrypt(f"{card_number}|{expiry}|{cvv}|{name}".encode())
